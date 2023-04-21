@@ -19,25 +19,28 @@ export default {
   async mounted() {
     this.initChart();
     await this.getData();
+    
     window.addEventListener("resize", this.screenAdapter);
     this.screenAdapter();
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.screenAdapter);
     clearInterval(this.timerId);
+    // this.$socket.unRegisterCallBack("ageData");
   },
   methods: {
     initChart() {
       this.chartInstance = this.$echarts.init(this.$refs.age_ref, this.theme);
       const initOption = {
         title: {
-          text: "▎ 人口和年龄比例",
+          text: "▎ 年龄、性别与城镇人口比例",
           left: 20,
           top: 20,
         },
         
       };
       this.chartInstance.setOption(initOption);
+      
     },
     async getData() {
       let data = await reqgetAge({ pid: this.pid });
@@ -53,13 +56,13 @@ export default {
           top=35
           
         }else{
-          left = 28 + (index-1) * 43;
+          left = 25 + (index-1) * 48;
           top=75
         }
         
         return {
           type: "pie",
-          radius: [40, 60],
+          radius: [30, 40],
           center: [left + "%", top+"%"],
           width: "50%",
           itemStyle: {
@@ -91,8 +94,8 @@ export default {
     },
     screenAdapter() {
       const titleFontsize = (this.$refs.age_ref.offsetWidth / 100) * 3.6;
-      const innerRadius = titleFontsize * 3+5;
-      const outterRadius = titleFontsize * 2+5;
+      const innerRadius = titleFontsize * 2.5+5;
+      const outterRadius = titleFontsize * 1.5+5;
       const adapterOption = {
         title: {
           textStyle: {
@@ -148,8 +151,9 @@ export default {
     theme() {
       this.chartInstance.dispose();
       this.initChart();
-      this.screenAdapter();
       this.updataChart();
+      this.screenAdapter();
+      
     },
     pid() {
       this.getData();

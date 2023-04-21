@@ -18,25 +18,16 @@ export default {
       titleFontSize: 0,
     };
   },
-  created() {
-    //在组件创建完成之后，进行回调函数的注册
-    // this.$socket.registerCallBack("trendData", this.getData);
-  },
+  
   async mounted() {
     this.initChart();
     await this.getData()
-    // this.$socket.send({
-    //   action: "getData",
-    //   socketType: "trendData",
-    //   chartName: "trend",
-    //   value: "",
-    // });
+    
     window.addEventListener("resize", this.screenAdapter);
     this.screenAdapter();
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.screenAdapter);
-    // this.$socket.unRegisterCallBack("trendData");
   },
   computed: {
     comStyle() {
@@ -50,7 +41,7 @@ export default {
         marginLeft: this.titleFontSize + "px",
       };
     },
-    ...mapState(["theme","pid"]),
+    ...mapState(["theme","pid","provinceName"]),
   },
   methods: {
     initChart() {
@@ -224,7 +215,6 @@ export default {
     },
     async getData() {
       this.allData=await reqgetPeople({pid:this.pid})
-      // const {data:ret}=await this.$http.get('trend')
       this.updataChart();
       return;
     },
@@ -232,6 +222,7 @@ export default {
       //处理数据
       const xAxisData = this.allData.xAxisData;
       const seriesData = this.allData.seriesData;
+      
       const seriesArr = seriesData.map(item => {
         return {
           data: item.data,
@@ -240,7 +231,12 @@ export default {
       const lengendArr = seriesData.map((item) => {
         return item.name;
       });
+      let title=this.provinceName?`▎ ${this.provinceName}人口数量及增长率`:`▎全国人口数量及增长率`
+      
       const dataOption = {
+        title: {
+          text: title
+        },
         xAxis: {
           data: xAxisData,
         },

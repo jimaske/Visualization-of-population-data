@@ -306,6 +306,9 @@
             }
         },
         "valueAxis": {
+            "nameTextStyle": {
+                color: "rgba(0,0,0,1)",
+            },
             "axisLine": {
                 "show": true,
                 "lineStyle": {
@@ -343,6 +346,9 @@
             }
         },
         "logAxis": {
+            "nameTextStyle": {
+                color: "rgba(0,0,0,1)",
+            },
             "axisLine": {
                 "show": true,
                 "lineStyle": {
@@ -380,6 +386,9 @@
             }
         },
         "timeAxis": {
+            "nameTextStyle": {
+                color: "rgba(0,0,0,1)",
+            },
             "axisLine": {
                 "show": true,
                 "lineStyle": {

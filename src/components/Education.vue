@@ -16,10 +16,6 @@ export default {
       endValue: 9, // 区域缩放的终点值
     };
   },
-  created() {
-    //在组件创建完成之后，进行回调函数的注册
-    // this.$socket.registerCallBack("rankData", this.getData);
-  },
   async mounted() {
     this.initChart();
     await this.getData();
@@ -28,7 +24,6 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.screenAdapter);
-    // this.$socket.unRegisterCallBack("rankData");
   },
   methods: {
     initChart() {
@@ -49,7 +44,6 @@ export default {
           left: "5%",
           right: "8%",
           bottom: "3%",
-          top: 100,
           containLabel: true,
         },
         xAxis: {
@@ -75,24 +69,17 @@ export default {
           name: "单位：人/十万人",
           triggerEvent: true,
           nameTextStyle: {
-            color: "rgba(255,255,255,1)",
             fontSize: 16,
-            padding: [0, 0, 10, -20],
+            padding: [0, 0, 10, -80],
           },
           splitLine: {
             show: true,
-            lineStyle: {
-              // color: "rgba(255,255,255,.1)",
-            },
           },
           axisTick: {
             show: false,
           },
           axisLine: {
             show: true,
-            lineStyle: {
-              // color: "rgba(255,255,255,.1)",
-            },
           },
           axisLabel: {
             show: true,
@@ -171,7 +158,6 @@ export default {
     async getData() {
       this.allData = await reqgetEducation({pid:this.pid});
       this.updataChart();
-      //   this.startInterval();
       return;
     },
     updataChart() {
@@ -200,6 +186,9 @@ export default {
       const titleFontSize = (this.$refs.rank_ref.offsetWidth / 100) * 3.6;
 
       const adapterOption = {
+        grid: {
+          top: titleFontSize+80,
+        },
         title: {
           textStyle: {
             fontSize: titleFontSize,
@@ -217,20 +206,6 @@ export default {
       this.chartInstance.setOption(adapterOption);
       this.chartInstance.resize();
     },
-    // startInterval() {
-    //   if (!this.timerId) {
-    //     clearInterval(this.timerId);
-    //   }
-    //   this.timerId = setInterval(() => {
-    //     this.startValue++;
-    //     this.endValue++;
-    //     if (this.endValue > this.allData.length - 1) {
-    //       this.startValue = 0;
-    //       this.endValue = 9;
-    //     }
-    //     this.updataChart();
-    //   }, 2000);
-    // },
   },
   computed: {
     ...mapState(["theme", "pid"]),

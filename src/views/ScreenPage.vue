@@ -19,7 +19,7 @@
       <section class="screen-left">
         <div
           id="left-top"
-          :class="[fullScreenStatus.trend ? 'fullscreen' : '']"
+          :class="[fullScreenStatus.trend ? 'fullscreen' : 'normal']"
         >
           
           <Trend ref="trend" />
@@ -37,7 +37,7 @@
         </div>
         <div
           id="left-bottom"
-          :class="[fullScreenStatus.age ? 'fullscreen' : '']"
+          :class="[fullScreenStatus.age ? 'fullscreen' : 'normal']"
         >
           <!-- 年龄和性别比例图 -->
           <Age ref="age" />
@@ -57,7 +57,7 @@
       <section class="screen-middle">
         <div
           id="middle-top"
-          :class="[fullScreenStatus.areamap ? 'fullscreen' : '']"
+          :class="[fullScreenStatus.areamap ? 'fullscreen' : 'normal']"
         >
           <!-- 人口数量分布图表 -->
           <Map ref="areamap" />
@@ -76,7 +76,7 @@
       </section>
       <section class="screen-right">
         
-        <div v-if="pid>=0" id="right-top" :class="[fullScreenStatus.provinceIncrease ? 'fullscreen' : '']">
+        <div v-if="pid>=0" id="right-top" :class="[fullScreenStatus.provinceIncrease ? 'fullscreen' : 'normal']">
           <!-- 市级人口增长图表 -->
           <ProvinceIncrease ref="provinceIncrease"></ProvinceIncrease>
           <div class="resize">
@@ -89,7 +89,7 @@
             ></span>
           </div>
         </div>
-        <div v-else id="right-top" :class="[fullScreenStatus.increase ? 'fullscreen' : '']">
+        <div v-else id="right-top" :class="[fullScreenStatus.increase ? 'fullscreen' : 'normal']">
           <!-- 省级人口增长图表 -->
           <Increase ref="increase" />
           <div class="resize">
@@ -105,7 +105,7 @@
         
         <div
           id="right-bottom"
-          :class="[fullScreenStatus.education ? 'fullscreen' : '']"
+          :class="[fullScreenStatus.education ? 'fullscreen' : 'normal']"
         >
           <!-- 教育程度图表 -->
           <Education ref="education" />
@@ -181,7 +181,7 @@ export default {
         provinceIncrease:false
       },
       screenFontSize: 0,
-      nowtime: "20023-01-01 00:00:00",
+      nowtime: "2023-01-01 00:00:00",
     };
   },
   methods: {
@@ -192,14 +192,6 @@ export default {
       this.$nextTick(()=>{
           this.$refs[chartName].screenAdapter()
       })
-      //将数据发送给服务端
-      // const targetValue = !this.fullScreenStatus[chartName];
-      // this.$socket.send({
-      //   action: "fullScreen",
-      //   socketType: "fullScreen",
-      //   chartName: chartName,
-      //   value: targetValue,
-      // });
     },
     recvData(data) {
       //取出是哪一个图表需要切换
@@ -275,6 +267,10 @@ export default {
     margin-left: 15px;
   }
 }
+.normal{
+  border-radius: 20px;
+  overflow: hidden;
+}
 .fullscreen {
   position: fixed !important;
   top: 0 !important;
@@ -283,6 +279,7 @@ export default {
   height: 100% !important;
   margin: 0 !important;
   z-index: 100;
+  
 }
 .return{
   

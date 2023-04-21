@@ -1,5 +1,6 @@
 <template>
   <div class="com-container">
+
     <ul class="link">
         <li><router-link to="/index" :style="linkStyle">首页</router-link></li>
         <li><router-link to="/screen" :style="linkStyle">中国人口数据</router-link></li>
@@ -7,6 +8,8 @@
     <div class="theme-icon">
       <img :src="themeSrc" class="qiehuan" @click="handleChangeTheme" />
     </div>
+    <div v-show="theme==='vintage'" class="loading" v-loading="loading" element-loading-background="#fefefe"></div>
+    <div v-show="theme==='chalk'" class="loading" v-loading="loading" element-loading-background="#222733"></div>
     <div class="com-chart world" ref="map_ref"></div>
   </div>
 </template>
@@ -20,29 +23,20 @@ export default {
     return {
       chartInstance: null,
       allDate: null,
-      theme:"chalk"
+      theme:"chalk",
+      loading:true
     };
   },
-  created() {
-    //在组件创建完成之后，进行回调函数的注册
-    // this.$socket.registerCallBack("mapData", this.getData);
-  },
   async mounted() {
+    this.loading=true;
     await this.initChart();
-    // this.$socket.send({
-    //   action: "getData",
-    //   socketType: "mapData",
-    //   chartName: "map",
-    //   value: "",
-    // });
-
     await this.getData();
+    this.loading=false;
     window.addEventListener("resize", this.screenAdapter);
     this.screenAdapter();
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.screenAdapter);
-    // this.$socket.unRegisterCallBack("mapData");
   },
   methods: {
     async initChart() {
@@ -268,7 +262,7 @@ export default {
       this.chartInstance = this.$echarts.init(this.$refs.map_ref, this.theme);
       //获取世界地图的矢量数据
       const ret = await axios.get(
-        "http://localhost:8999/static/map/world.json"
+        "../../static/map/world.json"
       );
       this.$echarts.registerMap("world", ret.data);
       const initOption = {
@@ -284,8 +278,6 @@ export default {
               if(isNaN(params.value))
               return `${params.name}<br/>未有确切数据`
               return `${params.name}<br/>${params.value}(万人)`
-              // console.log(a,b,c);
-              // "{b}{c} "
             },
           },
           visualMap: {
@@ -409,8 +401,10 @@ export default {
   },
   watch: {
     async theme() {
+      this.loading=true;
       this.chartInstance.dispose();
       await this.initChart();
+      this.loading=false;
       this.screenAdapter();
       this.updataChart();
     },

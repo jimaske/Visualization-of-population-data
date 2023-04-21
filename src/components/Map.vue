@@ -1,6 +1,7 @@
 <template>
   <div class="com-container" @dblclick="revertMap">
-    <div v-loading="loading"></div>
+    <div v-show="theme==='vintage'" class="loading" v-loading="loading" element-loading-background="#fefefe"></div>
+    <div v-show="theme==='chalk'" class="loading" v-loading="loading" element-loading-background="#222733"></div>
     <div class="com-chart" ref="map_ref"></div>
   </div>
 </template>
@@ -20,8 +21,10 @@ export default {
     };
   },
   async mounted() {
+    this.loading=true;
     await this.initChart();
     await this.getData();
+    this.loading=false;
     this.changeMap();
     window.addEventListener("resize", this.screenAdapter);
     this.screenAdapter();
@@ -84,10 +87,8 @@ export default {
       let changeOption;
       if (this.provinceName) {
         const provinceInfo = getProvinceMapInfo(this.provinceName);
-        // console.log(provinceInfo);
         if (provinceInfo.key || provinceInfo.key <= 33) {
           if (!this.mapData[provinceInfo.key]) {
-            console.log(provinceInfo.path);
             const ret = await axios.get("../" + provinceInfo.path);
             this.mapData[provinceInfo.key] = ret.data;
             this.$echarts.registerMap(provinceInfo.key, ret.data);
@@ -156,13 +157,7 @@ export default {
     },
     revertMap() {
       this.$store.commit("SETPID", undefined);
-      // const revertOption = {
-      //   series: {
-      //     map: "china",
-      //     data: this.allDate,
-      //   },
-      // };
-      // this.chartInstance.setOption(revertOption);
+      
     },
   },
   computed: {
@@ -170,9 +165,12 @@ export default {
   },
   watch: {
     async theme() {
+      this.loading=true;
       this.chartInstance.dispose();
       await this.initChart();
+      this.loading=false;
       this.changeMap();
+      
       this.screenAdapter();
       this.updataChart();
     },

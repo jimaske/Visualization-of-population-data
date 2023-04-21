@@ -16,25 +16,15 @@ export default {
       timerId: null,
     };
   },
-  created() {
-    // this.$socket.registerCallBack("ageData", this.getData);
-  },
   async mounted() {
     this.initChart();
     await this.getData();
-    // this.$socket.send({
-    //   action: "getData",
-    //   socketType: "ageData",
-    //   chartName: "age",
-    //   value: "",
-    // });
     window.addEventListener("resize", this.screenAdapter);
     this.screenAdapter();
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.screenAdapter);
     clearInterval(this.timerId);
-    // this.$socket.unRegisterCallBack("ageData");
   },
   methods: {
     initChart() {
@@ -48,14 +38,11 @@ export default {
         
       };
       this.chartInstance.setOption(initOption);
-      //   this.chartInstance.on("mouseover", () => clearInterval(this.timerId));
-      //   this.chartInstance.on("mouseout", () => this.startInterval());
     },
     async getData() {
       let data = await reqgetAge({ pid: this.pid });
       this.allDate = data;
       this.updataChart();
-      //   this.startInterval();
       return;
     },
     updataChart() {
@@ -85,7 +72,6 @@ export default {
             formatter: "{b} \n{d}%",
             minMargin: 5,
             edgeDistance: 10,
-            // lineHeight: 15,
           },
           labelLine: {
             length: 5,
@@ -107,7 +93,6 @@ export default {
       const titleFontsize = (this.$refs.age_ref.offsetWidth / 100) * 3.6;
       const innerRadius = titleFontsize * 3+5;
       const outterRadius = titleFontsize * 2+5;
-      // console.log(innerRadius,outterRadius);
       const adapterOption = {
         title: {
           textStyle: {
@@ -155,15 +140,6 @@ export default {
       this.chartInstance.setOption(adapterOption);
       this.chartInstance.resize();
     },
-    // startInterval() {
-    //   if (this.timerId) {
-    //     clearInterval(this.timerId);
-    //   }
-    //   this.timerId = setInterval(() => {
-    //     this.currentIndex = ++this.currentIndex % 2;
-    //     this.updataChart();
-    //   }, 5000);
-    // },
   },
   computed: {
     ...mapState(["theme", "pid"]),
